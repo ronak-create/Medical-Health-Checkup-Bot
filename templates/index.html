@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medical Image Analysis System</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .drag-drop-zone {
+        border: 2px dashed #cbd5e0;
+        transition: all 0.3s ease;
+      }
+      .drag-drop-zone:hover {
+        border-color: #4299e1;
+      }
+      .preview-image {
+        max-height: 200px;
+        object-fit: contain;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex items-center">
+            <span class="text-xl font-semibold text-blue-600"
+              >Medical Image Analysis System</span
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <div
+        class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+        role="alert"
+      >
+        <span class="block sm:inline">{{ message }}</span>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <!-- Upload Form -->
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h1 class="text-2xl font-bold text-gray-800 mb-6">
+            Upload Medical Images for Analysis
+          </h1>
+
+          <form
+            action="{{ url_for('upload_files') }}"
+            method="post"
+            enctype="multipart/form-data"
+            class="space-y-6"
+          >
+            <!-- Eye Image Upload -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Eye Examination Image
+              </label>
+              <div class="drag-drop-zone rounded-lg p-4">
+                <div class="space-y-2 text-center">
+                  <div class="space-y-1">
+                    <svg
+                      class="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <div class="text-sm text-gray-600">
+                      <label
+                        for="eye_image"
+                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+                      >
+                        <span>Upload Eye Image</span>
+                        <input
+                          id="eye_image"
+                          name="eye_image"
+                          type="file"
+                          class="sr-only"
+                          accept="image/*"
+                          required
+                          onchange="previewImage(this, 'eye-preview')"
+                        />
+                      </label>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                      PNG, JPG, JPEG up to 16MB
+                    </p>
+                  </div>
+                  <img
+                    id="eye-preview"
+                    class="preview-image mx-auto hidden"
+                    alt="Eye image preview"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Oral Cavity Image Upload -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Oral Cavity Image
+              </label>
+              <div class="drag-drop-zone rounded-lg p-4">
+                <div class="space-y-2 text-center">
+                  <div class="space-y-1">
+                    <svg
+                      class="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <div class="text-sm text-gray-600">
+                      <label
+                        for="oral_image"
+                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+                      >
+                        <span>Upload Oral Cavity Image</span>
+                        <input
+                          id="oral_image"
+                          name="oral_image"
+                          type="file"
+                          class="sr-only"
+                          accept="image/*"
+                          required
+                          onchange="previewImage(this, 'oral-preview')"
+                        />
+                      </label>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                      PNG, JPG, JPEG up to 16MB
+                    </p>
+                  </div>
+                  <img
+                    id="oral-preview"
+                    class="preview-image mx-auto hidden"
+                    alt="Oral cavity image preview"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+              <button
+                type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Analyze Images
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-lg font-medium text-gray-900 mb-4">Instructions</h2>
+          <div class="text-sm text-gray-600 space-y-2">
+            <p>1. Upload a clear, well-lit image of the eye for examination.</p>
+            <p>2. Upload a clear image of the oral cavity.</p>
+            <p>3. Ensure both images are in focus and properly oriented.</p>
+            <p>
+              4. Click "Analyze Images" to receive a detailed medical analysis.
+            </p>
+            <p class="text-red-600 mt-4">
+              Note: This system is for informational purposes only and should
+              not replace professional medical consultation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-12 border-t border-gray-200">
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <p class="text-center text-sm text-gray-500">
+          This tool is designed to assist in preliminary medical image analysis.
+          Always consult with a healthcare professional for proper medical
+          diagnosis and treatment.
+        </p>
+      </div>
+    </footer>
+
+    <!-- JavaScript for Image Preview -->
+    <script>
+      function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.classList.remove("hidden");
+          };
+
+          reader.readAsDataURL(file);
+        }
+      }
+    </script>
+  </body>
+</html>
