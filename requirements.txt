@@ -3,3 +3,4 @@ werkzeug
 Pillow
 google-generativeai
 markdown
+gunicorn
