@@ -1,0 +1,56 @@
+import google.generativeai as genai
+import os
+from PIL import Image
+
+# Configure Gemini API key (set your key in environment variable for safety)
+genai.configure(api_key="AIzaSyDX_nBYIFOcio6ov3psKcJCxu-Xw7vJUg0")
+
+# Load the model (you can try "gemini-1.5-flash" if pro is out of quota)
+model = genai.GenerativeModel("gemini-1.5-pro")
+
+def analyze_images(eye_image_path, oral_image_path):
+    try:
+        prompt = """
+        Please analyze these medical images:
+        1. First image is of the eye
+        2. Second image is of the oral cavity
+
+        Provide a detailed medical analysis covering:
+        - Any visible abnormalities or concerns
+        - Potential conditions or symptoms indicated
+        - Recommendations for follow-up if necessary
+        - Overall health status assessment
+
+        Format the response with markdown sections:
+        ## Eye Analysis
+        ### Abnormalities/Concerns
+        ### Potential Conditions
+        ### Recommendations
+
+        ## Oral Cavity Analysis
+        ### Abnormalities/Concerns
+        ### Potential Conditions
+        ### Recommendations
+
+        ## Overall Assessment
+        """
+
+        eye_img = Image.open(eye_image_path)
+        oral_img = Image.open(oral_image_path)
+
+        response = model.generate_content(
+            [prompt, eye_img, oral_img]
+        )
+
+        return response.text
+
+    except Exception as e:
+        return f"Error during analysis: {str(e)}"
+
+
+# ---------- Test Run ----------
+if __name__ == "__main__":
+    eye_image = "image1.jpg"   # replace with your test image
+    oral_image = "image2.jpg"  # replace with your test image
+    result = analyze_images(eye_image, oral_image)
+    print(result)

@@ -1,0 +1,5 @@
+Flask
+werkzeug
+Pillow
+google-generativeai
+markdown
